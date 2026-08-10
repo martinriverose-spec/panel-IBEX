@@ -1,0 +1,22 @@
+name: Panel Rebote IBEX
+on:
+  schedule:
+    - cron: '15 16 * * 1-5'   # 18:15 Madrid (verano) = 45 min tras el cierre de 17:30
+  workflow_dispatch:           # boton "Run workflow" para lanzarlo desde el movil
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install yfinance pandas numpy
+      - run: python panel_ibex_rebote.py
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          keep_files: false
