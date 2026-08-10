@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Panel Rebote IBEX</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070B;--c1:#0C1219;--c2:#131B26;--ln:#212D3C;--gr:#00E88F;--am:#FFC400;
+--rd:#FF3A5E;--bl:#3DA5FF;--w:#fff;--g1:#C6D0DC;--g2:#8493A5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--w);font-family:Archivo,system-ui,sans-serif;font-size:15px;line-height:1.5;padding-bottom:44px}
+.wrap{max-width:800px;margin:0 auto;padding:0 14px}
+header{padding:20px 0 8px}h1{font-size:25px;font-weight:900;letter-spacing:-.02em}h1 span{color:var(--gr)}
+.sub{color:var(--g2);font-size:11.5px;font-family:'JetBrains Mono',monospace;margin-top:4px}
+.bar{display:flex;align-items:center;gap:10px;background:var(--c1);border:1px solid var(--ln);padding:11px 13px;margin:12px 0 20px}
+.dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px;background:var(--g2)}
+.bar.ok .dot{background:var(--gr);box-shadow:0 0 8px var(--gr)}
+.bar.old .dot{background:var(--rd)}
+.bt{flex:1;min-width:0}.b1{font-size:12.5px;font-weight:700}
+.b2{font-size:10.5px;color:var(--g2);font-family:'JetBrains Mono',monospace}
+.btn{font-size:10.5px;font-weight:700;padding:8px 11px;border:1px solid var(--ln);background:var(--c2);
+color:var(--g1);cursor:pointer;font-family:Archivo;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--bl);color:#fff}
+.rec{background:var(--c1);border-left:3px solid var(--bl);padding:10px 13px;margin-bottom:4px;
+font-size:12.5px;color:var(--g1);line-height:1.55}
+.rec b{color:#fff}
+.sh{display:flex;align-items:center;gap:8px;margin:24px 0 10px}
+.sh i{width:10px;height:10px;border-radius:50%;font-style:normal}
+.sh h2{font-size:16px;font-weight:900}
+.card{background:var(--c1);border:1px solid var(--ln);margin-bottom:13px}
+.card.go{border:2px solid var(--gr)}.card.wait{border-left:3px solid var(--am)}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--c2);
+border-bottom:1px solid var(--ln);flex-wrap:wrap;gap:6px}
+.tk{font-size:21px;font-weight:900}.tk em{font-style:normal;font-size:11.5px;color:var(--g2);font-weight:400;margin-left:8px}
+.card.go .bg{font-size:9.5px;font-weight:700;letter-spacing:.07em;background:var(--gr);color:#000;padding:4px 9px}
+.card.wait .bg{font-size:9.5px;font-weight:700;letter-spacing:.07em;color:var(--am);border:1px solid var(--am);padding:4px 9px}
+.plan{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--ln)}
+.pl{padding:11px 6px;text-align:center;border-right:1px solid var(--ln);display:flex;flex-direction:column;gap:2px}
+.pl:last-child{border-right:0}
+.pl .k{font-size:8.5px;font-weight:700;color:var(--g2);letter-spacing:.05em}
+.pl .v{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700}
+.pl .s{font-size:9.5px;color:var(--g2);font-family:'JetBrains Mono',monospace}
+.pl.st .v{color:var(--rd)}.pl.tp .v{color:var(--gr)}
+@media(max-width:560px){.plan{grid-template-columns:1fr 1fr}.pl{border-bottom:1px solid var(--ln)}}
+.body{padding:13px 14px}
+.row{display:block;margin-bottom:11px;font-size:12.5px}.row:last-child{margin-bottom:0}
+.lb{display:block;font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--bl);margin-bottom:3px}
+.tx{color:var(--g1);line-height:1.55}.tx b{color:#fff}
+.fund{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.fi{background:var(--c2);border:1px solid var(--ln);padding:5px 8px;display:flex;flex-direction:column;min-width:64px}
+.fi b{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
+.fi i{font-style:normal;font-size:8.5px;color:var(--g2);letter-spacing:.04em}
+.pos{color:var(--gr)}.neg{color:var(--rd)}.dim{color:var(--g2)}
+.nw{display:block;color:var(--g1);text-decoration:none;padding:6px 0;border-bottom:1px solid rgba(33,45,60,.6);font-size:11.5px;line-height:1.45}
+.nw:last-child{border-bottom:0}.nw:hover{color:#fff}
+.nd{display:block;font-size:9px;color:var(--g2);font-family:'JetBrains Mono',monospace}
+.empty{background:var(--c1);border:2px solid var(--rd);padding:26px 16px;text-align:center;color:var(--g1);font-size:13px}
+.empty .big{font-size:32px;font-weight:900;color:var(--rd);margin-bottom:8px;letter-spacing:-.02em}
+table{width:100%;border-collapse:collapse;font-size:11.5px;font-family:'JetBrains Mono',monospace}
+th{text-align:left;padding:7px 8px;color:var(--g2);font-size:8.5px;letter-spacing:.05em;border-bottom:1px solid var(--ln)}
+td{padding:7px 8px;border-bottom:1px solid rgba(33,45,60,.5)}.tk2{font-weight:700;color:var(--w);font-family:Archivo}
+.bx{background:var(--c1);border:1px solid var(--ln);padding:14px}
+.bx h3{font-size:12px;font-weight:900;letter-spacing:.05em;margin-bottom:9px;color:var(--bl)}
+.bx p{color:var(--g1);font-size:12.5px;line-height:1.6;margin-bottom:8px}.bx p:last-child{margin-bottom:0}
+.bx b{color:#fff}
+footer{margin-top:22px;padding-top:13px;border-top:1px solid var(--ln);color:var(--g2);font-size:10.5px;line-height:1.65}
+footer b{color:var(--g1)}
+</style></head><body><div class="wrap">
+<header><h1>Panel <span>Rebote</span> IBEX</h1>
+<div class="sub">Reversion a minimos · una posicion · 400 EUR · eToro</div></header>
+
+<div class="bar" id="bar"><div class="dot"></div><div class="bt">
+<div class="b1">Cierre 2026-08-07</div>
+<div class="b2" id="b2">Generado 10/08/2026 14:56 UTC</div></div>
+<a class="btn" href="?t=0" onclick="this.href='?t='+Date.now()">RECARGAR</a>
+<a class="btn" href="https://github.com/martinriverose-spec/panel-IBEX/actions" target="_blank" rel="noopener">ACTUALIZAR</a>
+</div>
+
+<div class="rec">
+  <b>Mirar solo antes de las 9:00 (Madrid) o de noche con el mercado cerrado.</b>
+  Durante la sesion el analisis no es valido: trabaja con velas cerradas.
+</div>
+
+<div class="sh"><i style="background:var(--gr)"></i><h2 style="color:var(--gr)">Plan de hoy</h2></div>
+
+<div class="card wait">
+  <div class="ch">
+    <div class="tk">MRL<em>Merlin · 14.770 EUR</em></div>
+    <div class="bg">FALTA CONFIRMAR</div>
+  </div>
+  <div class="plan">
+    <div class="pl"><span class="k">COMPRAR</span><span class="v">27.08 acciones</span><span class="s">= 400 EUR</span></div>
+    <div class="pl st"><span class="k">STOP LOSS</span><span class="v">14.244</span><span class="s">-3.6% · 14.25 EUR</span></div>
+    <div class="pl tp"><span class="k">TAKE PROFIT</span><span class="v">15.920</span><span class="s">+7.8% · 31.14 EUR</span></div>
+    <div class="pl"><span class="k">R:R</span><span class="v">2.19</span><span class="s">25 sesiones max</span></div>
+  </div>
+  <div class="body">
+    <div class="row"><span class="lb">EJECUCION</span><span class="tx"><b>NO entrar aun.</b> Necesita cerrar por encima de <b>14.900 EUR</b> (maximo de ayer). Si eso pasa, entras la manana siguiente.
+      Pon el Stop Loss en <b>14.244</b> y el Take Profit en <b>15.920</b>.
+      Si eToro te los pide en dinero: <b>14.25 EUR</b> de perdida y <b>31.14 EUR</b> de ganancia.
+      <b>Un solo objetivo, sin cierres parciales.</b> Si a las 25 sesiones no toco ninguno, cierra y libera el capital.</span></div>
+    
+    <div class="row"><span class="lb">ESTRUCTURA</span><span class="tx">
+      A <b>2.5%</b> de su minimo de 8 semanas (14.410), pero <b>+6.3%</b> sobre la MA200
+      y -2.1% sobre la MA50: corrige dentro de tendencia, no se derrumba.
+      Objetivo = maximo de 8 semanas (15.920). ATR 0.332 (2.1% diario) ·
+      liquidez 12 M EUR/dia.</span></div>
+    <div class="row"><span class="lb">FUNDAMENTAL</span><span class="tx"><span class="fund"><span class="fi"><b class="pos">14.6%</b><i>Ingresos</i></span><span class="fi"><b class="pos">141.7%</b><i>Margen</i></span><span class="fi"><b class="pos">16.6%</b><i>Beneficio</i></span><span class="fi"><b class="pos">9.9%</b><i>ROE</i></span><span class="fi"><b class="">9.9</b><i>PER</i></span><span class="fi"><b class="pos">55.8</b><i>Deuda/Pat.</i></span><span class="fi"><b class="">1.5%</b><i>Dividendo</i></span></span>
+      <br><span class="dim">Sector: Real Estate</span></span></div>
+    <div class="row"><span class="lb">TITULARES</span><span class="tx"><a class="nw" href="https://finance.yahoo.com/real-estate/articles/merlin-properties-socimi-sa-mrprf-010257249.html" target="_blank" rel="noopener"><span class="nd">2026-07-30 · GuruFocus.com</span>Merlin Properties SOCIMI SA (MRPRF) (H1 2026) Earnings Call Highlights: Record Data Center ...</a><a class="nw" href="https://finance.yahoo.com/news/merlin-properties-socimi-sa-mrprf-210206370.html" target="_blank" rel="noopener"><span class="nd">2026-02-27 · GuruFocus.com</span>Merlin Properties SOCIMI SA (MRPRF) Full Year 2025 Earnings Call Highlights: Strong FFO Growth ...</a><a class="nw" href="https://finance.yahoo.com/news/merlin-properties-socimi-sa-mrprf-010329550.html" target="_blank" rel="noopener"><span class="nd">2025-11-19 · GuruFocus.com</span>Merlin Properties SOCIMI SA (MRPRF) Q3 2025 Earnings Call Highlights: Strong Growth Amidst ...</a></span></div>
+  </div>
+</div>
+<div class="card wait">
+  <div class="ch">
+    <div class="tk">SCYR<em>Sacyr · 4.576 EUR</em></div>
+    <div class="bg">FALTA CONFIRMAR</div>
+  </div>
+  <div class="plan">
+    <div class="pl"><span class="k">COMPRAR</span><span class="v">87.41 acciones</span><span class="s">= 400 EUR</span></div>
+    <div class="pl st"><span class="k">STOP LOSS</span><span class="v">4.387</span><span class="s">-4.1% · 16.51 EUR</span></div>
+    <div class="pl tp"><span class="k">TAKE PROFIT</span><span class="v">4.952</span><span class="s">+8.2% · 32.87 EUR</span></div>
+    <div class="pl"><span class="k">R:R</span><span class="v">1.99</span><span class="s">25 sesiones max</span></div>
+  </div>
+  <div class="body">
+    <div class="row"><span class="lb">EJECUCION</span><span class="tx"><b>NO entrar aun.</b> Necesita cerrar por encima de <b>4.620 EUR</b> (maximo de ayer). Si eso pasa, entras la manana siguiente.
+      Pon el Stop Loss en <b>4.387</b> y el Take Profit en <b>4.952</b>.
+      Si eToro te los pide en dinero: <b>16.51 EUR</b> de perdida y <b>32.87 EUR</b> de ganancia.
+      <b>Un solo objetivo, sin cierres parciales.</b> Si a las 25 sesiones no toco ninguno, cierra y libera el capital.</span></div>
+    
+    <div class="row"><span class="lb">ESTRUCTURA</span><span class="tx">
+      A <b>2.8%</b> de su minimo de 8 semanas (4.450), pero <b>+8.5%</b> sobre la MA200
+      y -1.6% sobre la MA50: corrige dentro de tendencia, no se derrumba.
+      Objetivo = maximo de 8 semanas (4.952). ATR 0.125 (2.3% diario) ·
+      liquidez 9 M EUR/dia.</span></div>
+    <div class="row"><span class="lb">FUNDAMENTAL</span><span class="tx"><span class="fund"><span class="fi"><b class="pos">12.2%</b><i>Ingresos</i></span><span class="fi"><b class="pos">2.7%</b><i>Margen</i></span><span class="fi"><b class="pos">985.6%</b><i>Beneficio</i></span><span class="fi"><b class="pos">11.9%</b><i>ROE</i></span><span class="fi"><b class="">26.7</b><i>PER</i></span><span class="fi"><b class="neg">416.9</b><i>Deuda/Pat.</i></span></span>
+      <br><span class="dim">Sector: Industrials</span></span></div>
+    <div class="row"><span class="lb">TITULARES</span><span class="tx"><a class="nw" href="https://finance.yahoo.com/markets/stocks/articles/sacyr-sa-stu-vhm-h1-190355634.html" target="_blank" rel="noopener"><span class="nd">2026-07-30 · GuruFocus.com</span>Sacyr SA (STU:VHM) (H1 2026) Earnings Call Highlights: Revenue and EBITDA Surge 9%, Net Profit ...</a><a class="nw" href="https://finance.yahoo.com/news/sacyr-sa-fra-vhm-q3-070050154.html" target="_blank" rel="noopener"><span class="nd">2025-11-08 · GuruFocus.com</span>Sacyr SA (FRA:VHM) Q3 2025 Earnings Call Highlights: Strong Growth Amidst Strategic Challenges</a><a class="nw" href="https://finance.yahoo.com/news/sacyr-bme-scyr-evaluating-valuation-120128059.html" target="_blank" rel="noopener"><span class="nd">2025-09-20 · Simply Wall St.</span>Sacyr (BME:SCYR): Evaluating Valuation After Notable Share Price Fluctuations</a></span></div>
+  </div>
+</div>
+<div class="card wait">
+  <div class="ch">
+    <div class="tk">ENG<em>Enagas · 16.840 EUR</em></div>
+    <div class="bg">FALTA CONFIRMAR</div>
+  </div>
+  <div class="plan">
+    <div class="pl"><span class="k">COMPRAR</span><span class="v">23.75 acciones</span><span class="s">= 400 EUR</span></div>
+    <div class="pl st"><span class="k">STOP LOSS</span><span class="v">16.316</span><span class="s">-3.1% · 12.45 EUR</span></div>
+    <div class="pl tp"><span class="k">TAKE PROFIT</span><span class="v">17.640</span><span class="s">+4.8% · 19.00 EUR</span></div>
+    <div class="pl"><span class="k">R:R</span><span class="v">1.53</span><span class="s">25 sesiones max</span></div>
+  </div>
+  <div class="body">
+    <div class="row"><span class="lb">EJECUCION</span><span class="tx"><b>NO entrar aun.</b> Necesita cerrar por encima de <b>16.900 EUR</b> (maximo de ayer). Si eso pasa, entras la manana siguiente.
+      Pon el Stop Loss en <b>16.316</b> y el Take Profit en <b>17.640</b>.
+      Si eToro te los pide en dinero: <b>12.45 EUR</b> de perdida y <b>19.00 EUR</b> de ganancia.
+      <b>Un solo objetivo, sin cierres parciales.</b> Si a las 25 sesiones no toco ninguno, cierra y libera el capital.</span></div>
+    
+    <div class="row"><span class="lb">ESTRUCTURA</span><span class="tx">
+      A <b>2.3%</b> de su minimo de 8 semanas (16.460), pero <b>+12.4%</b> sobre la MA200
+      y -0.6% sobre la MA50: corrige dentro de tendencia, no se derrumba.
+      Objetivo = maximo de 8 semanas (17.640). ATR 0.289 (1.5% diario) ·
+      liquidez 12 M EUR/dia.</span></div>
+    <div class="row"><span class="lb">FUNDAMENTAL</span><span class="tx"><span class="fund"><span class="fi"><b class="neg">-9.3%</b><i>Ingresos</i></span><span class="fi"><b class="pos">30.5%</b><i>Margen</i></span><span class="fi"><b class="neg">-36.9%</b><i>Beneficio</i></span><span class="fi"><b class="pos">12.7%</b><i>ROE</i></span><span class="fi"><b class="">15.2</b><i>PER</i></span><span class="fi"><b class="pos">130.2</b><i>Deuda/Pat.</i></span></span>
+      <br><span class="dim">Sector: Utilities</span></span></div>
+    <div class="row"><span class="lb">TITULARES</span><span class="tx"><a class="nw" href="https://finance.yahoo.com/markets/stocks/articles/enagas-sa-enggf-q2-2026-150046002.html" target="_blank" rel="noopener"><span class="nd">2026-07-22 · GuruFocus.com</span>Enagas SA (ENGGF) (Q2 2026) Earnings Call Highlights: Strong Financial Performance and ...</a><a class="nw" href="https://finance.yahoo.com/sectors/energy/articles/enag-expands-france-ter-ga-075922523.html" target="_blank" rel="noopener"><span class="nd">2026-04-21 · Oilprice.com</span>Enagás Expands Into France With Teréga Stake, Refocuses Hydrogen Strategy</a><a class="nw" href="https://finance.yahoo.com/news/assessing-enag-bme-eng-valuation-021155595.html" target="_blank" rel="noopener"><span class="nd">2026-03-13 · Simply Wall St.</span>Assessing Enagás (BME:ENG) Valuation After Recent Gradual Share Price Strength</a></span></div>
+  </div>
+</div>
+
+<div class="sh"><i style="background:var(--g2)"></i><h2 style="color:var(--g2)">Descartados</h2></div>
+<div class="bx" style="padding:0">
+<table><tr><th>VALOR</th><th>PRECIO</th><th>DIST. MIN</th><th>vs MA200</th><th>MOTIVO</th></tr><tr><td class="tk2">SLR</td><td>15.82</td><td>0.0%</td><td class="neg">-20.0%</td><td class="dim">Bajo MA200 (-20.0%): tendencia rota</td></tr><tr><td class="tk2">CIE</td><td>25.80</td><td>1.8%</td><td class="neg">-7.9%</td><td class="dim">Bajo MA200 (-7.9%): tendencia rota</td></tr><tr><td class="tk2">ANA</td><td>213.00</td><td>2.9%</td><td class="neg">-0.4%</td><td class="dim">213 EUR/accion: dejaria capital ocioso</td></tr><tr><td class="tk2">ANE</td><td>20.86</td><td>3.6%</td><td class="neg">-5.5%</td><td class="dim">Bajo MA200 (-5.5%): tendencia rota</td></tr><tr><td class="tk2">ACS</td><td>109.00</td><td>4.8%</td><td class="pos">+5.1%</td><td class="dim">109 EUR/accion: dejaria capital ocioso</td></tr><tr><td class="tk2">AENA</td><td>26.84</td><td>5.3%</td><td class="pos">+9.5%</td><td class="dim">A 5.3% del minimo: sin descuento</td></tr><tr><td class="tk2">IBE</td><td>20.70</td><td>5.4%</td><td class="pos">+8.8%</td><td class="dim">A 5.4% del minimo: sin descuento</td></tr><tr><td class="tk2">TEF</td><td>3.67</td><td>6.7%</td><td class="pos">+3.2%</td><td class="dim">A 6.7% del minimo: sin descuento</td></tr><tr><td class="tk2">FER</td><td>57.36</td><td>6.7%</td><td class="pos">+0.3%</td><td class="dim">57 EUR/accion: dejaria capital ocioso</td></tr><tr><td class="tk2">PUIG</td><td>16.88</td><td>7.4%</td><td class="pos">+7.2%</td><td class="dim">A 7.4% del minimo: sin descuento</td></tr><tr><td class="tk2">COL</td><td>5.58</td><td>7.8%</td><td class="pos">+9.1%</td><td class="dim">A 7.8% del minimo: sin descuento</td></tr><tr><td class="tk2">RED</td><td>15.47</td><td>8.0%</td><td class="pos">+6.0%</td><td class="dim">A 8.0% del minimo: sin descuento</td></tr></table></div>
+
+<div class="sh"><i style="background:var(--bl)"></i><h2 style="color:var(--bl)">El sistema</h2></div>
+<div class="bx">
+<h3>CRITERIOS VALIDADOS CON BACKTEST</h3>
+<p>Cinco anos, 35 valores del IBEX, 110 operaciones: <b>51% de aciertos, profit factor 1,65</b>,
+neto medio <b>+4,75 EUR</b> por operacion sobre 400 EUR con 2 EUR de comision.</p>
+<p><b>La compuerta que decide todo</b> es la vela de confirmacion. Sin exigir que el precio cierre por encima
+del maximo del dia anterior, el mismo sistema <b>pierde dinero</b>. Nunca se compra mientras cae.</p>
+<p><b>Un solo objetivo, sin salidas parciales.</b> El backtest lo demuestra: cerrar antes, en la media de 20,
+convierte el sistema en perdedor (profit factor 0,76) porque las ganancias quedan mas pequenas que las perdidas
+aunque aciertes mas veces.</p>
+<p><b>Cuando mirar el panel.</b> Es un sistema de cierre: analiza solo sesiones cerradas, asi que
+pulsar ACTUALIZAR a las 11:00 o a las 16:00 da <b>el mismo resultado</b>. No es un fallo, es el diseno:
+una vela a medio hacer daria confirmaciones que luego se evaporan. Revisalo por la tarde tras el cierre
+o por la manana antes de abrir, y ejecuta en la apertura. Medido en el backtest: entrar en la apertura
+rinde <b>+4,93 EUR</b> por operacion (PF 1,68); entrar mas tarde ese mismo dia, <b>+4,36 EUR</b> (PF 1,62).
+Pierdes algo de ventaja pero sigue funcionando: <b>tienes flexibilidad de horario</b>.</p>
+<p><b>Frecuencia esperada:</b> ~2 senales al mes. La mayoria de los dias no hay nada que hacer, y eso es
+el funcionamiento correcto, no un fallo.</p>
+</div>
+
+<footer>
+<p><b>Limites que debes conocer.</b> 110 operaciones es una muestra pequena y el profit factor de 1,65 puede
+contener ruido. El backtest asume que ejecutas todos los stops sin excepcion y que entras en la apertura
+siguiente. No incluye horquilla ni deslizamiento.</p>
+<p><b>El fundamental no descarta automaticamente:</b> se muestra para tu juicio. Si los ingresos caen o la deuda
+es alta, no operes aunque el tecnico sea perfecto. Lee los titulares antes de entrar.</p>
+<p><b>Datos:</b> Yahoo Finance, OHLCV diario, tickers .MC de la Bolsa de Madrid. Panel de analisis,
+no recomendacion de inversion.</p>
+</footer></div>
+<script>
+(function(){
+ var gen=new Date("2026-08-10T14:56:12.579067+00:00"), h=(new Date()-gen)/36e5, b=document.getElementById('bar'),
+ s=document.getElementById('b2');
+ if(h>96){b.className='bar old'; s.textContent+=' · Sin actualizar hace mas de 4 dias: revisa Actions.';}
+ else {b.className='bar ok'; s.textContent+=' · Datos al dia.';}
+})();
+</script></body></html>
